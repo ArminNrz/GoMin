@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+minio:
+  endpoint: "localhost:9000/"
+  accessKey: "4oiBm7BKE2iMeXA7"
+  secretKey: "KjRS35bfDgTHFuASusKkPZtCvP34h2U7"
+  useSSL: false
+
+api:
+  keys:
+    jury: "jury-key"
