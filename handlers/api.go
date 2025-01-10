@@ -110,19 +110,22 @@ func (h *APIHandler) GetFile(c echo.Context) error {
 
 	bucketName := c.Param("bucketName")
 
-	fileUrl := c.FormValue("file_url")
-	if fileUrl == "" {
+	encodedFileUrl := c.QueryParam("fileUrl")
+	decodedFileUrl, err := Base64Decoder(encodedFileUrl)
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
-			"error": "File url is required",
+			"error": "File url is wrong",
 		})
 	}
 
-	object, err := h.Minio.GetFileStream(bucketName, fileUrl)
+	object, err := h.Minio.GetFileStream(bucketName, decodedFileUrl)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"error:": fmt.Sprintf("Can not fetch file %v", err),
 		})
 	}
 
-	return c.Stream(http.StatusOK, "application/octet-stream", object)
+	mimeType := DetectMimeType(decodedFileUrl)
+	c.Response().Header().Set("Content-Disposition", `attachment; filename="`+decodedFileUrl+`"`)
+	return c.Stream(http.StatusOK, mimeType, object)
 }
