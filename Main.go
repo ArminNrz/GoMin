@@ -4,6 +4,7 @@ import (
 	"GoMin/config"
 	"GoMin/handlers"
 	"GoMin/miniohelper"
+	"GoMin/security"
 	"fmt"
 	"log"
 
@@ -31,9 +32,9 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.POST("/v1/upload/:bucketName/file", apiHandler.UploadFile)
-	e.DELETE("/v1/delete/:bucketName/file", apiHandler.RemoveFile)
-	e.GET("/v1/retrieve/:bucketName/file", apiHandler.GetFile)
+	e.POST("/v1/upload/:bucketName/file", apiHandler.UploadFile, security.RoleBaseAuthMiddleware("SYSTEM"))
+	e.DELETE("/v1/delete/:bucketName/file", apiHandler.RemoveFile, security.RoleBaseAuthMiddleware("SYSTEM"))
+	e.GET("/v1/retrieve/:bucketName/file", apiHandler.GetFile, security.RoleBaseAuthMiddleware("ROLE_BIKER"))
 
 	port := config.AppConfig.Server.Port
 	log.Printf("Starting server on port %d...\n", port)

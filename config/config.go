@@ -28,6 +28,9 @@ type Config struct {
 	API struct {
 		Keys map[string]string `yaml:"api-key"`
 	} `yaml:"api"`
+	Jwt struct {
+		Secret string `yaml:"secret"`
+	}
 }
 
 var AppConfig Config

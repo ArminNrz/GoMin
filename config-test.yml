@@ -10,3 +10,6 @@ minio:
 api:
   keys:
     jury: "jury-key"
+
+jwt:
+  secret: secret
